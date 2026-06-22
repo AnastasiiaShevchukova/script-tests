@@ -23,16 +23,22 @@ public class ScriptRunner {
 
     private void runScript(String filePath) {
         System.out.println("Running script..");
+
         ProcessBuilder processBuilder = new ProcessBuilder("bash", SCRIPT_PATH, filePath);
         try {
             Process process = processBuilder.start();
 
             StringBuilder outputBuilder = new StringBuilder();
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    outputBuilder.append(line).append("\n");
-                }
+            BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+            while ((line = output.readLine()) != null) {
+                outputBuilder.append(line).append("\n");
+            }
+
+            while ((line = error.readLine()) != null) {
+                outputBuilder.append(line).append("\n");
             }
 
             errorMessage = outputBuilder.toString();
@@ -40,7 +46,9 @@ public class ScriptRunner {
 
         } catch (IOException | InterruptedException e) {
             errorMessage = e.getMessage();
+
         }
+
     }
 
     public int getExitCode() {

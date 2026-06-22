@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Random;
+import java.util.Locale;
 
 public class DataGenerator {
     private static final String DIR_PATH = Paths.get(System.getProperty("user.dir"), "script", "data").toString();
@@ -59,8 +60,31 @@ public class DataGenerator {
     }
 
     public void withRecord(String user, String date, String category, double amount) {
-        String record = String.format("%s,%s,%s,%.2f\n", user, date, category, amount);
+        String record = String.format(Locale.US,"%s,%s,%s,%.2f\n", user, date, category, amount);
 
         writeData(record, true);
+    }
+
+    public void generateLargeFile(int num) {
+        try {
+            FileWriter writer = new FileWriter(FILE_PATH);
+            writer.write("user,date,category,amount\n");
+
+            for(int i = 0; i < num; i++) {
+                writer.write(
+                        "user" + i +
+                                ",2025-01-01" +
+                                ",food" +
+                                ",100\n"
+                );
+            }
+            writer.close();
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        };
+    }
+
+    public void withInvalidSeparator(){
+        writeData("user;date;category;amount\n" + "user1;2025-01-01;food;100\n", false);
     }
 }
