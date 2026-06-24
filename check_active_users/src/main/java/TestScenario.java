@@ -1,6 +1,7 @@
-import helpers.DataGenerator;
-import helpers.ResultAnalyser;
-import helpers.ScriptRunner;
+import steps.GivenStep;
+import utils.DataGenerator;
+import utils.ResultAnalyser;
+import utils.ScriptRunner;
 
 
 public class TestScenario {
@@ -18,6 +19,8 @@ public class TestScenario {
 
 
     public GivenStep given() {
+        dataGenerator.resetFiles();
+        dataGenerator.initFiles();
         return new GivenStep(dataGenerator, scriptRunner, resultAnalyser);
     }
 
